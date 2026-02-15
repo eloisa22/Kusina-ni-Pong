@@ -34,6 +34,10 @@
         .form { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-bottom: 2px solid #f0f2f5; }
         .full-width { grid-column: span 2; }
         
+        /* NEW GRID PROPORTIONS: 70% Product, 30% Qty */
+        .prod-col { grid-column: span 1; width: 140%; }
+        .qty-col { grid-column: span 1; width: 60%; justify-self: end; }
+
         label { font-size: 14px; font-weight: 700; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
         
         input, select { 
@@ -49,7 +53,6 @@
         }
         input:focus, select:focus { border-color: #d63031; outline: none; background-color: #fff9f9; }
         
-        /* Error message style */
         #errorMsg { color: #d63031; font-size: 14px; font-weight: bold; margin-top: 5px; display: none; }
 
         .btn-group { padding: 0 25px 25px; display: flex; gap: 15px; flex-direction: column; }
@@ -70,10 +73,12 @@
         }
 
         .btn-add { background: #d63031; box-shadow: 0 4px #b02626; }
-        /* Style for disabled button */
         .btn-add:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; opacity: 0.6; }
-        
         .btn-excel { background: #27ae60; box-shadow: 0 4px #1e8449; }
+        
+        /* Delete Button in Table */
+        .del-btn { background: none; border: none; color: #d63031; cursor: pointer; font-size: 18px; padding: 0; flex: none; }
+
         button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px #881e1e; }
 
         .table-area { padding: 20px; max-height: 400px; overflow-y: auto; }
@@ -105,7 +110,7 @@
             <input type="text" id="buyerName" placeholder="Enter Name">
             <div id="errorMsg">⚠️ Missing Name! Please enter the buyer's name.</div>
         </div>
-        <div>
+        <div class="prod-col">
             <label>Product</label>
             <select id="prod">
                 <option value="160">Chicken Pastil (Spicy) - ₱160</option>
@@ -118,8 +123,8 @@
                 <option value="180">Pork Humba - ₱180</option>
             </select>
         </div>
-        <div>
-            <label>Quantity</label>
+        <div class="qty-col">
+            <label>Qty</label>
             <input type="number" id="qty" value="1" min="1">
         </div>
     </div>
@@ -134,7 +139,7 @@
     <div class="table-area">
         <table id="orderTable">
             <thead>
-                <tr><th>Name</th><th>Item</th><th>Qty</th><th>Total</th></tr>
+                <tr><th>Name</th><th>Item</th><th>Qty</th><th>Total</th><th></th></tr>
             </thead>
             <tbody id="tbody"></tbody>
         </table>
@@ -146,7 +151,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDA_Xr94im77KKizIz5IBB3FeGweCP1Egc",
@@ -167,7 +172,6 @@
   const buyerInput = document.getElementById('buyerName');
   const errorMsg = document.getElementById('errorMsg');
 
-  // CHECK IF NAME IS EMPTY
   buyerInput.addEventListener('input', () => {
       if (buyerInput.value.trim() === "") {
           addBtn.disabled = true;
@@ -180,12 +184,7 @@
 
   addBtn.addEventListener('click', () => {
       const name = buyerInput.value.trim();
-      
-      // Safety check (redundant but good practice)
-      if (!name) {
-          errorMsg.style.display = "block";
-          return;
-      }
+      if (!name) return;
 
       const prodSelect = document.getElementById('prod');
       const itemName = prodSelect.options[prodSelect.selectedIndex].text.split(' - ')[0];
@@ -201,11 +200,9 @@
       };
 
       push(ordersRef, newOrder);
-      
-      // Reset form
       document.getElementById('qty').value = 1; 
       buyerInput.value = ""; 
-      addBtn.disabled = true; // Disable again after save
+      addBtn.disabled = true;
   });
 
   onValue(ordersRef, (snapshot) => {
@@ -215,19 +212,27 @@
       tbody.innerHTML = "";
 
       if (data) {
-          Object.values(data).reverse().forEach(order => {
+          Object.entries(data).reverse().forEach(([key, order]) => {
               grandTotal += order.total;
               const row = `<tr>
                   <td>${order.name}</td>
                   <td><b>${order.item}</b></td>
                   <td>${order.qty}</td>
                   <td>₱${order.total.toLocaleString()}</td>
+                  <td><button class="del-btn" onclick="deleteOrder('${key}')">🗑️</button></td>
               </tr>`;
               tbody.innerHTML += row;
           });
       }
       document.getElementById('grandDisplay').innerText = grandTotal.toLocaleString();
   });
+
+  // Function to delete from Firebase
+  window.deleteOrder = (id) => {
+      if(confirm("Delete this entry?")) {
+          remove(ref(db, 'orders/' + id));
+      }
+  };
 
   excelBtn.addEventListener('click', () => {
       onValue(ordersRef, (snapshot) => {
