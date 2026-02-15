@@ -13,7 +13,7 @@
         body { 
             font-family: 'Rubik', sans-serif; 
             background: linear-gradient(black, white); 
-            padding: 20px; /* Reduced padding for mobile friendliness */
+            padding: 20px; 
             display: flex; 
             justify-content: center; 
             min-height: 100vh; 
@@ -36,21 +36,25 @@
         
         label { font-size: 14px; font-weight: 700; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
         
-        /* MADE INPUTS BIGGER HERE */
         input, select { 
             font-family: 'Rubik', sans-serif; 
             width: 100%; 
-            padding: 16px; /* Increased padding */
+            padding: 16px; 
             border: 2px solid #dfe6e9; 
             border-radius: 10px; 
-            font-size: 20px; /* Increased font size */
+            font-size: 20px; 
             font-weight: 500;
             box-sizing: border-box; 
             color: #2d3436;
         }
         input:focus, select:focus { border-color: #d63031; outline: none; background-color: #fff9f9; }
         
-        .btn-group { padding: 0 25px 25px; display: flex; gap: 15px; }
+        /* Error message style */
+        #errorMsg { color: #d63031; font-size: 14px; font-weight: bold; margin-top: 5px; display: none; }
+
+        .btn-group { padding: 0 25px 25px; display: flex; gap: 15px; flex-direction: column; }
+        .buttons-row { display: flex; gap: 15px; }
+
         button { 
             font-family: 'Rubik', sans-serif; 
             flex: 1; 
@@ -64,9 +68,13 @@
             text-transform: uppercase;
             font-size: 16px;
         }
+
         .btn-add { background: #d63031; box-shadow: 0 4px #b02626; }
+        /* Style for disabled button */
+        .btn-add:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; opacity: 0.6; }
+        
         .btn-excel { background: #27ae60; box-shadow: 0 4px #1e8449; }
-        button:active { transform: translateY(2px); box-shadow: 0 2px #881e1e; }
+        button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px #881e1e; }
 
         .table-area { padding: 20px; max-height: 400px; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; }
@@ -95,6 +103,7 @@
         <div class="full-width">
             <label>Buyer's Name</label>
             <input type="text" id="buyerName" placeholder="Enter Name">
+            <div id="errorMsg">⚠️ Missing Name! Please enter the buyer's name.</div>
         </div>
         <div>
             <label>Product</label>
@@ -116,8 +125,10 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn-add" id="addBtn">ADD ENTRY</button>
-        <button class="btn-excel" id="excelBtn">DOWNLOAD EXCEL</button>
+        <div class="buttons-row">
+            <button class="btn-add" id="addBtn" disabled>ADD ENTRY</button>
+            <button class="btn-excel" id="excelBtn">DOWNLOAD EXCEL</button>
+        </div>
     </div>
 
     <div class="table-area">
@@ -153,9 +164,29 @@
 
   const addBtn = document.getElementById('addBtn');
   const excelBtn = document.getElementById('excelBtn');
+  const buyerInput = document.getElementById('buyerName');
+  const errorMsg = document.getElementById('errorMsg');
+
+  // CHECK IF NAME IS EMPTY
+  buyerInput.addEventListener('input', () => {
+      if (buyerInput.value.trim() === "") {
+          addBtn.disabled = true;
+          errorMsg.style.display = "block";
+      } else {
+          addBtn.disabled = false;
+          errorMsg.style.display = "none";
+      }
+  });
 
   addBtn.addEventListener('click', () => {
-      const name = document.getElementById('buyerName').value || "Anonymous";
+      const name = buyerInput.value.trim();
+      
+      // Safety check (redundant but good practice)
+      if (!name) {
+          errorMsg.style.display = "block";
+          return;
+      }
+
       const prodSelect = document.getElementById('prod');
       const itemName = prodSelect.options[prodSelect.selectedIndex].text.split(' - ')[0];
       const price = parseInt(prodSelect.value);
@@ -170,8 +201,11 @@
       };
 
       push(ordersRef, newOrder);
+      
+      // Reset form
       document.getElementById('qty').value = 1; 
-      document.getElementById('buyerName').value = ""; // Clears name after adding
+      buyerInput.value = ""; 
+      addBtn.disabled = true; // Disable again after save
   });
 
   onValue(ordersRef, (snapshot) => {
@@ -216,6 +250,4 @@
 </script>
 
 </body>
-
 </html>
-
