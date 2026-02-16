@@ -7,41 +7,50 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rubik:ital,wght@0,300..900;1,300..900&family=Tapestry&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&family=Tapestry&display=swap" rel="stylesheet">
 
     <style>
         body { font-family: 'Rubik', sans-serif; background: linear-gradient(black, white); padding: 10px; display: flex; justify-content: center; min-height: 100vh; margin: 0; }
-        .container { background: white; width: 100%; max-width: 700px; border-radius: 15px; box-shadow: 0 2px 2px 5px #FFD150; overflow: hidden; height: fit-content; margin-top: 20px;}
-        .header { background: #d63031; color: #FFD150; padding: 20px; text-align: center; }
-        .logo { width: 150px; height: auto; margin-bottom: 10px; border-radius: 50%; padding: 5px; }
-        .header h1 { margin: 0; font-family: "Tapestry", serif; font-size: 36px; font-weight: 400; }
-
-        .form { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border-bottom: 2px solid #f0f2f5; }
-        .full-width { grid-column: span 2; }
+        .container { background: white; width: 100%; max-width: 850px; border-radius: 15px; box-shadow: 0 2px 2px 5px #FFD150; overflow: hidden; height: fit-content; margin-top: 20px;}
         
-        /* Layout fixed: Product is wider, Qty is smaller */
+        .header { background: #d63031; color: #FFD150; padding: 20px; text-align: center; }
+        .logo { width: 80px; height: auto; border-radius: 50%; margin-bottom: 10px; }
+        .header h1 { margin: 0; font-family: "Tapestry", serif; font-size: 28px; }
+
+        .tabs { display: flex; background: #f1f2f6; border-bottom: 2px solid #dfe6e9; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: 900; color: #636e72; cursor: pointer; text-transform: uppercase; font-size: 14px; }
+        .tab-btn.active { color: #d63031; border-bottom: 4px solid #d63031; background: white; }
+
+        .page { display: none; padding: 20px; }
+        .page.active { display: block; }
+
+        .form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
         .prod-col { grid-column: span 1; width: 135%; }
         .qty-col { grid-column: span 1; width: 60%; justify-self: end; }
 
         label { font-size: 12px; font-weight: 700; color: #636e72; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        input, select { font-family: 'Rubik', sans-serif; width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 18px; box-sizing: border-box; color: #2d3436; }
+        input, select { font-family: 'Rubik', sans-serif; width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
         
-        #errorMsg { color: #d63031; font-size: 13px; font-weight: bold; margin-top: 5px; display: none; }
+        #qtyMsg { color: #d63031; font-size: 11px; font-weight: bold; margin-top: 4px; }
 
-        .btn-group { padding: 0 20px 20px; display: flex; gap: 10px; }
-        button { font-family: 'Rubik', sans-serif; flex: 1; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; color: white; text-transform: uppercase; font-size: 14px; transition: 0.2s; }
-        .btn-add { background: #d63031; box-shadow: 0 4px #b02626; }
-        .btn-add:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
-        .btn-excel { background: #27ae60; box-shadow: 0 4px #1e8449; }
-        
-        .del-btn { background: none; border: none; color: #d63031; cursor: pointer; font-size: 18px; padding: 0; }
+        .btn-add { background: #d63031; width: 100%; margin-top: 20px; padding: 15px; color: white; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; box-shadow: 0 4px #b02626; }
+        .btn-add:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
 
-        .table-area { padding: 10px; max-height: 500px; overflow-y: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; font-size: 12px; border-bottom: 2px solid #eee; padding: 10px; color: #b2bec3; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f1f2f6; font-size: 15px; color: #2d3436; }
+        .table-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+        #searchBox { flex: 2; }
+        .btn-excel { flex: 1; background: #27ae60; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+        .table-area { overflow-x: auto; }
+        <table> { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { text-align: left; font-size: 11px; border-bottom: 2px solid #eee; padding: 10px; color: #b2bec3; text-transform: uppercase; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f1f2f6; font-size: 14px; }
         
-        .total-section { padding: 20px; text-align: right; background: #f9f9f9; font-size: 24px; font-weight: 900; color: #d63031; }
+        .paid-chk { transform: scale(1.5); cursor: pointer; }
+        .paid-row { background-color: #f0fff4; }
+        .del-btn { background: none; border: none; color: #d63031; cursor: pointer; font-size: 18px; }
+
+        .total-section { margin-top: 20px; padding: 15px; text-align: right; background: #f9f9f9; font-size: 22px; font-weight: 900; color: #d63031; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -51,52 +60,63 @@
         <img src="logo.png" alt="Logo" class="logo">
         <h1>Kusina ni Daddy Pong</h1>
     </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openPage('addPage', this)">Add Order</button>
+        <button class="tab-btn" onclick="openPage('logPage', this)">Sales Log</button>
+    </div>
     
-    <div class="form">
-        <div class="full-width">
-            <label>Buyer's Name</label>
-            <input type="text" id="buyerName" placeholder="Enter Name">
+    <div id="addPage" class="page active">
+        <div class="form">
+            <div class="full-width">
+                <label>Buyer's Name</label>
+                <input type="text" id="buyerName" placeholder="Enter Name">
+            </div>
+            <div class="prod-col">
+                <label>Product</label>
+                <select id="prod">
+                    <option value="160">Chicken Pastil (Spicy) - ₱160</option>
+                    <option value="150">Chicken Pastil (Original) - ₱150</option>
+                    <option value="170">Kinamatisang Dilis - ₱170</option>
+                    <option value="180">Pork Binagoongan (S&S) - ₱180</option>
+                    <option value="180">Pork Binagoongan (Sweet) - ₱180</option>
+                    <option value="160">Chicken Roll (Ham) - ₱160</option>
+                    <option value="160">Chicken Roll (Hotdog) - ₱160</option>
+                    <option value="180">Pork Humba - ₱180</option>
+                </select>
+            </div>
+            <div class="qty-col">
+                <label>Qty</label>
+                <input type="number" id="qty" value="0" min="0">
+                <span id="qtyMsg">⚠️ Add quantity</span>
+            </div>
         </div>
-        <div class="prod-col">
-            <label>Product</label>
-            <select id="prod">
-                <option value="160">Chicken Pastil (Spicy) - ₱160</option>
-                <option value="150">Chicken Pastil (Original) - ₱150</option>
-                <option value="170">Kinamatisang Dilis - ₱170</option>
-                <option value="180">Pork Binagoongan (Sweet &amp; spicy) - ₱180</option>
-                <option value="180">Pork Binagoongan (Sweet) - ₱180</option>
-                <option value="160">Chicken Roll (Ham) - ₱160</option>
-                <option value="160">Chicken Roll (Hotdog) - ₱160</option>
-                <option value="180">Pork Humba - ₱180</option>
-            </select>
-        </div>
-        <div class="qty-col">
-            <label>Qty</label>
-            <input type="number" id="qty" value="1" min="1">
-        </div>
-    </div>
-
-    <div class="btn-group">
         <button class="btn-add" id="addBtn" disabled>ADD ENTRY</button>
-        <button class="btn-excel" id="excelBtn">DOWNLOAD EXCEL</button>
     </div>
 
-    <div class="table-area">
-        <table id="orderTable">
-            <thead>
-                <tr><th>Name</th><th>Item</th><th>Qty</th><th>Total</th><th></th></tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-        </table>
-    </div>
-    <div class="total-section">
-        Grand Total: ₱<span id="grandDisplay">0</span>
+    <div id="logPage" class="page">
+        <div class="table-controls">
+            <input type="text" id="searchBox" placeholder="Search name...">
+            <button class="btn-excel" id="excelBtn">EXCEL</button>
+        </div>
+
+        <div class="table-area">
+            <table id="mainTable">
+                <thead>
+                    <tr><th>Paid</th><th>Name</th><th>Item</th><th>Qty</th><th>Total</th><th></th></tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+        <div class="total-section">
+            Grand Total: ₱<span id="grandDisplay">0</span>
+        </div>
     </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, push, onValue, remove, update, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDA_Xr94im77KKizIz5IBB3FeGweCP1Egc",
@@ -115,77 +135,133 @@
   const addBtn = document.getElementById('addBtn');
   const excelBtn = document.getElementById('excelBtn');
   const buyerInput = document.getElementById('buyerName');
+  const qtyInput = document.getElementById('qty');
+  const qtyMsg = document.getElementById('qtyMsg');
+  const searchBox = document.getElementById('searchBox');
 
-  const PASS = "Bukatot@18";
+  const MY_PASS = "Bukatot@18";
 
-  // Fixed validation: enables when you type
-  buyerInput.addEventListener('input', () => {
-      addBtn.disabled = buyerInput.value.trim().length === 0;
-  });
+  window.openPage = function(pageId, btn) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      btn.classList.add('active');
+  }
 
-  // NO PASSWORD to add (easier for you)
-  addBtn.addEventListener('click', () => {
+  function validateForm() {
+      const nameOk = buyerInput.value.trim().length > 0;
+      const qtyVal = parseInt(qtyInput.value);
+      qtyMsg.style.display = (qtyVal > 0) ? "none" : "block";
+      addBtn.disabled = !(nameOk && qtyVal > 0);
+  }
+
+  buyerInput.addEventListener('input', validateForm);
+  qtyInput.addEventListener('input', validateForm);
+
+  // FIXED: No more password prompt here
+  addBtn.addEventListener('click', async () => {
       const name = buyerInput.value.trim();
       const prodSelect = document.getElementById('prod');
       const itemName = prodSelect.options[prodSelect.selectedIndex].text.split(' - ')[0];
       const price = parseInt(prodSelect.value);
-      const quantity = parseInt(document.getElementById('qty').value);
-      
-      const newOrder = {
-          name: name,
-          item: itemName,
-          qty: quantity,
-          total: price * quantity,
-          timestamp: new Date().toLocaleString()
-      };
+      const quantity = parseInt(qtyInput.value);
 
-      push(ordersRef, newOrder);
-      buyerInput.value = "";
-      addBtn.disabled = true;
+      try {
+          const snapshot = await get(ordersRef);
+          const data = snapshot.val();
+          let existingKey = null;
+          let oldQty = 0;
+
+          if (data) {
+              for (let key in data) {
+                  if (data[key].name.toLowerCase() === name.toLowerCase() && data[key].item === itemName && !data[key].paid) {
+                      existingKey = key;
+                      oldQty = data[key].qty;
+                      break;
+                  }
+              }
+          }
+
+          if (existingKey) {
+              const newQty = oldQty + quantity;
+              const updates = {};
+              updates[`orders/${existingKey}/qty`] = newQty;
+              updates[`orders/${existingKey}/total`] = newQty * price;
+              updates[`orders/${existingKey}/timestamp`] = new Date().toLocaleString();
+              await update(ref(db), updates);
+          } else {
+              await push(ordersRef, {
+                  name: name, item: itemName, qty: quantity, total: price * quantity, paid: false, timestamp: new Date().toLocaleString()
+              });
+          }
+
+          buyerInput.value = "";
+          qtyInput.value = 0;
+          validateForm();
+          alert("Order Added!");
+
+      } catch (err) { alert("Error: " + err.message); }
   });
 
   onValue(ordersRef, (snapshot) => {
-      const data = snapshot.val();
+      renderTable(snapshot.val(), searchBox.value);
+  });
+
+  searchBox.addEventListener('input', () => {
+      get(ordersRef).then(snapshot => renderTable(snapshot.val(), searchBox.value));
+  });
+
+  function renderTable(data, filter = "") {
       const tbody = document.getElementById('tbody');
       let grandTotal = 0;
       tbody.innerHTML = "";
 
       if (data) {
           Object.entries(data).reverse().forEach(([key, order]) => {
-              grandTotal += order.total;
-              const row = `<tr>
-                  <td>${order.name}</td>
-                  <td><b>${order.item}</b></td>
-                  <td>${order.qty}</td>
-                  <td>₱${order.total.toLocaleString()}</td>
-                  <td><button class="del-btn" data-id="${key}">🗑️</button></td>
-              </tr>`;
-              tbody.innerHTML += row;
-          });
-
-          // Password ONLY to delete
-          document.querySelectorAll('.del-btn').forEach(btn => {
-              btn.onclick = () => {
-                  const pass = prompt("Password to delete:");
-                  if (pass === PASS) {
-                      remove(ref(db, 'orders/' + btn.getAttribute('data-id')));
-                  } else {
-                      alert("Wrong Password");
-                  }
-              };
+              if (order.name.toLowerCase().includes(filter.toLowerCase())) {
+                  grandTotal += order.total;
+                  const rowClass = order.paid ? "class='paid-row'" : "";
+                  tbody.innerHTML += `<tr ${rowClass}>
+                      <td><input type="checkbox" class="paid-chk" data-id="${key}" ${order.paid ? 'checked' : ''}></td>
+                      <td>${order.name}</td>
+                      <td><b>${order.item}</b></td>
+                      <td>${order.qty}</td>
+                      <td>₱${order.total.toLocaleString()}</td>
+                      <td><button class="del-btn" onclick="deleteEntry('${key}')">🗑️</button></td>
+                  </tr>`;
+              }
           });
       }
       document.getElementById('grandDisplay').innerText = grandTotal.toLocaleString();
-  });
+      
+      document.querySelectorAll('.paid-chk').forEach(chk => {
+          chk.onchange = async () => {
+              const p = prompt("Enter Password to confirm payment:");
+              if (p === MY_PASS) {
+                  update(ref(db), { [`orders/${chk.dataset.id}/paid`]: chk.checked });
+              } else {
+                  chk.checked = !chk.checked;
+                  alert("Wrong Password");
+              }
+          };
+      });
+  }
 
-  // Keep original excel logic
+  window.deleteEntry = function(key) {
+      if (prompt("Enter Password to DELETE:") === MY_PASS) {
+          remove(ref(db, 'orders/' + key));
+      } else {
+          alert("Wrong Password");
+      }
+  };
+
   excelBtn.addEventListener('click', () => {
-      onValue(ordersRef, (snapshot) => {
+      get(ordersRef).then(snapshot => {
           const data = snapshot.val();
-          if(!data) return alert("No data yet!");
-          let csv = "Date,Buyer Name,Product,Quantity,Total\n";
+          if(!data) return alert("No data!");
+          let csv = "Date,Paid Status,Buyer Name,Product,Quantity,Total\n";
           Object.values(data).forEach(o => {
-              csv += `"${o.timestamp}","${o.name}","${o.item}",${o.qty},${o.total}\n`;
+              csv += `"${o.timestamp}","${o.paid ? 'YES' : 'NO'}","${o.name}","${o.item}",${o.qty},${o.total}\n`;
           });
           const blob = new Blob([csv], { type: 'text/csv' });
           const url = URL.createObjectURL(blob);
@@ -193,10 +269,9 @@
           a.href = url;
           a.download = "Kusina_Daddy_Pong_Sales.csv";
           a.click();
-      }, { onlyOnce: true });
+      });
   });
 </script>
 
 </body>
 </html>
-
