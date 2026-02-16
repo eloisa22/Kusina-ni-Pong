@@ -10,97 +10,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rubik:ital,wght@0,300..900;1,300..900&family=Tapestry&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            font-family: 'Rubik', sans-serif; 
-            background: linear-gradient(black, white); 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            min-height: 100vh; 
-            margin: 0; 
-        }
+        body { font-family: 'Rubik', sans-serif; background: linear-gradient(black, white); padding: 10px; display: flex; justify-content: center; min-height: 100vh; margin: 0; }
         .container { background: white; width: 100%; max-width: 700px; border-radius: 15px; box-shadow: 0 2px 2px 5px #FFD150; overflow: hidden; height: fit-content; margin-top: 20px;}
-        
-        .header { background: #d63031; color: #FFD150; padding: 30px 20px; text-align: center; }
-        .logo { width: 170px; height: auto; margin-bottom: 10px; border-radius: 50%; padding: 10px;  }
-        
-        .header h1 { 
-            margin: 0; 
-            font-family: "Tapestry", serif;
-            font-size: 42px; 
-            font-weight: 400;
-        }
+        .header { background: #d63031; color: #FFD150; padding: 20px; text-align: center; }
+        .logo { width: 150px; height: auto; margin-bottom: 10px; border-radius: 50%; padding: 5px; }
+        .header h1 { margin: 0; font-family: "Tapestry", serif; font-size: 36px; font-weight: 400; }
 
-        .form { padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-bottom: 2px solid #f0f2f5; }
+        .form { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border-bottom: 2px solid #f0f2f5; }
         .full-width { grid-column: span 2; }
         
-        /* NEW GRID PROPORTIONS: 70% Product, 30% Qty */
-        .prod-col { grid-column: span 1; width: 140%; }
+        /* Layout fixed: Product is wider, Qty is smaller */
+        .prod-col { grid-column: span 1; width: 135%; }
         .qty-col { grid-column: span 1; width: 60%; justify-self: end; }
 
-        label { font-size: 14px; font-weight: 700; color: #636e72; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+        label { font-size: 12px; font-weight: 700; color: #636e72; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        input, select { font-family: 'Rubik', sans-serif; width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 18px; box-sizing: border-box; color: #2d3436; }
         
-        input, select { 
-            font-family: 'Rubik', sans-serif; 
-            width: 100%; 
-            padding: 16px; 
-            border: 2px solid #dfe6e9; 
-            border-radius: 10px; 
-            font-size: 20px; 
-            font-weight: 500;
-            box-sizing: border-box; 
-            color: #2d3436;
-        }
-        input:focus, select:focus { border-color: #d63031; outline: none; background-color: #fff9f9; }
-        
-        #errorMsg { color: #d63031; font-size: 14px; font-weight: bold; margin-top: 5px; display: none; }
+        #errorMsg { color: #d63031; font-size: 13px; font-weight: bold; margin-top: 5px; display: none; }
 
-        .btn-group { padding: 0 25px 25px; display: flex; gap: 15px; flex-direction: column; }
-        .buttons-row { display: flex; gap: 15px; }
-
-        button { 
-            font-family: 'Rubik', sans-serif; 
-            flex: 1; 
-            padding: 18px; 
-            border: none; 
-            border-radius: 10px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            color: white; 
-            transition: 0.2s; 
-            text-transform: uppercase;
-            font-size: 16px;
-        }
-
+        .btn-group { padding: 0 20px 20px; display: flex; gap: 10px; }
+        button { font-family: 'Rubik', sans-serif; flex: 1; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; color: white; text-transform: uppercase; font-size: 14px; transition: 0.2s; }
         .btn-add { background: #d63031; box-shadow: 0 4px #b02626; }
-        .btn-add:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; opacity: 0.6; }
+        .btn-add:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
         .btn-excel { background: #27ae60; box-shadow: 0 4px #1e8449; }
         
-        /* Delete Button in Table */
-        .del-btn { background: none; border: none; color: #d63031; cursor: pointer; font-size: 18px; padding: 0; flex: none; }
+        .del-btn { background: none; border: none; color: #d63031; cursor: pointer; font-size: 18px; padding: 0; }
 
-        button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px #881e1e; }
-
-        .table-area { padding: 20px; max-height: 400px; overflow-y: auto; }
+        .table-area { padding: 10px; max-height: 500px; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; font-size: 13px; border-bottom: 2px solid #eee; padding: 12px; color: #b2bec3; font-weight: 700; text-transform: uppercase; }
-        td { padding: 15px 12px; border-bottom: 1px solid #f1f2f6; font-size: 16px; color: #2d3436; }
+        th { text-align: left; font-size: 12px; border-bottom: 2px solid #eee; padding: 10px; color: #b2bec3; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f1f2f6; font-size: 15px; color: #2d3436; }
         
-        .total-section { 
-            padding: 25px; 
-            text-align: right; 
-            background: #f9f9f9; 
-            font-size: 26px; 
-            font-weight: 900; 
-            color: #d63031; 
-        }
+        .total-section { padding: 20px; text-align: right; background: #f9f9f9; font-size: 24px; font-weight: 900; color: #d63031; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <img src="logo.png" alt="Daddy Pong Logo" class="logo">
+        <img src="logo.png" alt="Logo" class="logo">
         <h1>Kusina ni Daddy Pong</h1>
     </div>
     
@@ -108,7 +56,6 @@
         <div class="full-width">
             <label>Buyer's Name</label>
             <input type="text" id="buyerName" placeholder="Enter Name">
-            <div id="errorMsg">⚠️ Missing Name! Please enter the buyer's name.</div>
         </div>
         <div class="prod-col">
             <label>Product</label>
@@ -130,10 +77,8 @@
     </div>
 
     <div class="btn-group">
-        <div class="buttons-row">
-            <button class="btn-add" id="addBtn" disabled>ADD ENTRY</button>
-            <button class="btn-excel" id="excelBtn">DOWNLOAD EXCEL</button>
-        </div>
+        <button class="btn-add" id="addBtn" disabled>ADD ENTRY</button>
+        <button class="btn-excel" id="excelBtn">DOWNLOAD EXCEL</button>
     </div>
 
     <div class="table-area">
@@ -170,22 +115,17 @@
   const addBtn = document.getElementById('addBtn');
   const excelBtn = document.getElementById('excelBtn');
   const buyerInput = document.getElementById('buyerName');
-  const errorMsg = document.getElementById('errorMsg');
 
+  const PASS = "Bukatot@18";
+
+  // Fixed validation: enables when you type
   buyerInput.addEventListener('input', () => {
-      if (buyerInput.value.trim() === "") {
-          addBtn.disabled = true;
-          errorMsg.style.display = "block";
-      } else {
-          addBtn.disabled = false;
-          errorMsg.style.display = "none";
-      }
+      addBtn.disabled = buyerInput.value.trim().length === 0;
   });
 
+  // NO PASSWORD to add (easier for you)
   addBtn.addEventListener('click', () => {
       const name = buyerInput.value.trim();
-      if (!name) return;
-
       const prodSelect = document.getElementById('prod');
       const itemName = prodSelect.options[prodSelect.selectedIndex].text.split(' - ')[0];
       const price = parseInt(prodSelect.value);
@@ -200,8 +140,7 @@
       };
 
       push(ordersRef, newOrder);
-      document.getElementById('qty').value = 1; 
-      buyerInput.value = ""; 
+      buyerInput.value = "";
       addBtn.disabled = true;
   });
 
@@ -219,31 +158,35 @@
                   <td><b>${order.item}</b></td>
                   <td>${order.qty}</td>
                   <td>₱${order.total.toLocaleString()}</td>
-                  <td><button class="del-btn" onclick="deleteOrder('${key}')">🗑️</button></td>
+                  <td><button class="del-btn" data-id="${key}">🗑️</button></td>
               </tr>`;
               tbody.innerHTML += row;
+          });
+
+          // Password ONLY to delete
+          document.querySelectorAll('.del-btn').forEach(btn => {
+              btn.onclick = () => {
+                  const pass = prompt("Password to delete:");
+                  if (pass === PASS) {
+                      remove(ref(db, 'orders/' + btn.getAttribute('data-id')));
+                  } else {
+                      alert("Wrong Password");
+                  }
+              };
           });
       }
       document.getElementById('grandDisplay').innerText = grandTotal.toLocaleString();
   });
 
-  // Function to delete from Firebase
-  window.deleteOrder = (id) => {
-      if(confirm("Delete this entry?")) {
-          remove(ref(db, 'orders/' + id));
-      }
-  };
-
+  // Keep original excel logic
   excelBtn.addEventListener('click', () => {
       onValue(ordersRef, (snapshot) => {
           const data = snapshot.val();
           if(!data) return alert("No data yet!");
-
           let csv = "Date,Buyer Name,Product,Quantity,Total\n";
           Object.values(data).forEach(o => {
               csv += `"${o.timestamp}","${o.name}","${o.item}",${o.qty},${o.total}\n`;
           });
-
           const blob = new Blob([csv], { type: 'text/csv' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
