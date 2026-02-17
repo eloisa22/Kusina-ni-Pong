@@ -15,10 +15,10 @@
         
         .header { background: #d63031; color: #FFD150; padding: 20px; text-align: center; }
         .logo { width: 80px; height: auto; border-radius: 50%; margin-bottom: 10px; }
-        .header h1 { margin: 0; font-family: "Tapestry", serif; font-size: 40px; }
+        .header h1 { margin: 0; font-family: "Tapestry", serif; font-size: 28px; }
 
         .tabs { display: flex; background: #f1f2f6; border-bottom: 2px solid #dfe6e9; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: 900; color: #636e72; cursor: pointer; text-transform: uppercase; font-size: 17px; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: 900; color: #636e72; cursor: pointer; text-transform: uppercase; font-size: 14px; }
         .tab-btn.active { color: #d63031; border-bottom: 4px solid #d63031; background: white; }
 
         .page { display: none; padding: 20px; }
@@ -29,7 +29,7 @@
         .prod-col { grid-column: span 1; width: 135%; }
         .qty-col { grid-column: span 1; width: 60%; justify-self: end; }
 
-        label { font-size: 13px; font-weight: 700; color: #636e72; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        label { font-size: 12px; font-weight: 700; color: #636e72; text-transform: uppercase; margin-bottom: 5px; display: block; }
         input, select { font-family: 'Rubik', sans-serif; width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
         
         #qtyMsg { color: #d63031; font-size: 11px; font-weight: bold; margin-top: 4px; }
@@ -43,11 +43,10 @@
 
         .table-area { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th { text-align: left; font-size: 12px; border-bottom: 2px solid #eee; padding: 10px; color: #b2bec3; text-transform: uppercase; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f1f2f6; font-size: 15px; }
+        th { text-align: left; font-size: 11px; border-bottom: 2px solid #eee; padding: 10px; color: #b2bec3; text-transform: uppercase; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f1f2f6; font-size: 14px; }
         
         .paid-chk { transform: scale(1.5); cursor: pointer; }
-        
         .paid-row { background-color: #f0fff4; color: #d63031; font-weight: bold; }
         .paid-row td b { color: #d63031; } 
 
@@ -79,14 +78,14 @@
             <div class="prod-col">
                 <label>Product</label>
                 <select id="prod">
-                    <option value="160">Chicken Pastil (Spicy) - ₱160</option>
-                    <option value="150">Chicken Pastil (Original) - ₱150</option>
-                    <option value="170">Kinamatisang Dilis - ₱170</option>
-                    <option value="180">Pork Binagoongan (Sweet &amp; Spicy) - ₱180</option>
-                    <option value="180">Pork Binagoongan (Sweet) - ₱180</option>
-                    <option value="160">Chicken Roll (Ham) - ₱160</option>
-                    <option value="160">Chicken Roll (Hotdog) - ₱160</option>
-                    <option value="180">Pork Humba - ₱180</option>
+                    <option value="160">Chicken Roll (Ham)</option>
+                    <option value="160">Chicken Roll (Hotdog)</option>
+                    <option value="160">Chicken Pastil (Spicy)</option>
+                    <option value="150">Chicken Pastil (Original)</option>
+                    <option value="180">Pork Humba</option>
+                    <option value="170">Kinamatisang Dilis</option>
+                    <option value="180">Pork Binagoongan (Sweet)</option>
+                    <option value="180">Pork Binagoongan (Sweet & Spicy)</option>
                 </select>
             </div>
             <div class="qty-col">
@@ -136,12 +135,16 @@
   const db = getDatabase(app);
   const ordersRef = ref(db, 'orders');
 
-  const addBtn = document.getElementById('addBtn');
-  const excelBtn = document.getElementById('excelBtn');
-  const buyerInput = document.getElementById('buyerName');
-  const qtyInput = document.getElementById('qty');
-  const qtyMsg = document.getElementById('qtyMsg');
-  const searchBox = document.getElementById('searchBox');
+  const productData = [
+      { name: "Chicken Roll (Ham)", price: 160 },
+      { name: "Chicken Roll (Hotdog)", price: 160 },
+      { name: "Chicken Pastil (Spicy)", price: 160 },
+      { name: "Chicken Pastil (Original)", price: 150 },
+      { name: "Pork Humba", price: 180 },
+      { name: "Kinamatisang Dilis", price: 170 },
+      { name: "Pork Binagoongan (Sweet)", price: 180 },
+      { name: "Pork Binagoongan (Sweet & Spicy)", price: 180 }
+  ];
 
   const MY_PASS = "Bukatot@18";
 
@@ -153,19 +156,24 @@
   }
 
   function validateForm() {
+      const buyerInput = document.getElementById('buyerName');
+      const qtyInput = document.getElementById('qty');
+      const addBtn = document.getElementById('addBtn');
+      const qtyMsg = document.getElementById('qtyMsg');
       const nameOk = buyerInput.value.trim().length > 0;
       const qtyVal = parseInt(qtyInput.value);
       qtyMsg.style.display = (qtyVal > 0) ? "none" : "block";
       addBtn.disabled = !(nameOk && qtyVal > 0);
   }
+  document.getElementById('buyerName').addEventListener('input', validateForm);
+  document.getElementById('qty').addEventListener('input', validateForm);
 
-  buyerInput.addEventListener('input', validateForm);
-  qtyInput.addEventListener('input', validateForm);
-
-  addBtn.addEventListener('click', async () => {
-      const name = buyerInput.value.trim();
+  document.getElementById('addBtn').addEventListener('click', async () => {
+      const buyerInput = document.getElementById('buyerName');
+      const qtyInput = document.getElementById('qty');
       const prodSelect = document.getElementById('prod');
-      const itemName = prodSelect.options[prodSelect.selectedIndex].text.split(' - ')[0];
+      const name = buyerInput.value.trim();
+      const itemName = prodSelect.options[prodSelect.selectedIndex].text;
       const price = parseInt(prodSelect.value);
       const quantity = parseInt(qtyInput.value);
 
@@ -197,7 +205,6 @@
                   name: name, item: itemName, qty: quantity, total: price * quantity, paid: false, timestamp: new Date().toLocaleString()
               });
           }
-
           buyerInput.value = "";
           qtyInput.value = 0;
           validateForm();
@@ -206,18 +213,17 @@
   });
 
   onValue(ordersRef, (snapshot) => {
-      renderTable(snapshot.val(), searchBox.value);
+      renderTable(snapshot.val(), document.getElementById('searchBox').value);
   });
 
-  searchBox.addEventListener('input', () => {
-      get(ordersRef).then(snapshot => renderTable(snapshot.val(), searchBox.value));
+  document.getElementById('searchBox').addEventListener('input', () => {
+      get(ordersRef).then(snapshot => renderTable(snapshot.val(), document.getElementById('searchBox').value));
   });
 
   function renderTable(data, filter = "") {
       const tbody = document.getElementById('tbody');
       let grandTotal = 0;
       tbody.innerHTML = "";
-
       if (data) {
           Object.entries(data).reverse().forEach(([key, order]) => {
               if (order.name.toLowerCase().includes(filter.toLowerCase())) {
@@ -235,43 +241,90 @@
           });
       }
       document.getElementById('grandDisplay').innerText = grandTotal.toLocaleString();
-      
       document.querySelectorAll('.paid-chk').forEach(chk => {
-          chk.onchange = async () => {
-              update(ref(db, `orders/${chk.dataset.id}`), { paid: chk.checked });
-          };
+          chk.onchange = async () => { update(ref(db, `orders/${chk.dataset.id}`), { paid: chk.checked }); };
       });
   }
 
   window.deleteEntry = function(key) {
-      if (prompt("Enter Password to DELETE:") === MY_PASS) {
-          remove(ref(db, 'orders/' + key));
-      } else {
-          alert("Incorrect Password!");
-      }
+      if (prompt("Enter Password to DELETE:") === MY_PASS) { remove(ref(db, 'orders/' + key)); }
+      else { alert("Incorrect Password!"); }
   };
 
-  excelBtn.addEventListener('click', () => {
+  // EXCEL EXPORT WITH PRICE ON NEXT LINE
+  document.getElementById('excelBtn').addEventListener('click', () => {
       get(ordersRef).then(snapshot => {
           const data = snapshot.val();
           if(!data) return alert("No data!");
-          
-          let csv = "Date,Paid Status,Buyer Name,Product,Quantity,Total\n";
-          let runningTotal = 0;
-          
-          Object.values(data).forEach(o => {
-              csv += `"${o.timestamp}","${o.paid ? 'YES' : 'NO'}","${o.name}","${o.item}",${o.qty},${o.total}\n`;
-              runningTotal += o.total;
+
+          let totalPaid = 0;
+          let totalUnpaid = 0;
+          let productRevenue = {};
+          productData.forEach(p => productRevenue[p.name] = 0);
+
+          let tableHtml = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+            <head><meta charset="UTF-8"></head>
+            <body>
+            <table border="1">
+                <tr style="background-color: #d63031; color: #FFD150; font-weight: bold; height: 50px;">
+                    <th style="vertical-align: middle;">Date</th>
+                    <th style="vertical-align: middle;">Status</th>
+                    <th style="vertical-align: middle;">Buyer Name</th>
+                    ${productData.map(p => `<th style="vertical-align: middle;">${p.name}<br>(₱${p.price})</th>`).join('')}
+                </tr>
+          `;
+
+          Object.values(data).forEach((o, index) => {
+              const status = o.paid ? "PAID" : "UNPAID";
+              if(o.paid) totalPaid += o.total; else totalUnpaid += o.total;
+
+              let rowItemsHtml = productData.map(p => {
+                  if (o.item === p.name) {
+                      productRevenue[p.name] += (o.qty * p.price);
+                      return `<td align="center">${o.qty}</td>`;
+                  }
+                  return `<td></td>`;
+              }).join('');
+
+              const bgColor = (index % 2 === 0) ? "#FFFFFF" : "#F2F2F2";
+              const textColor = o.paid ? "#d63031" : "#000000";
+
+              tableHtml += `
+                <tr style="background-color: ${bgColor}; color: ${textColor};">
+                    <td>${o.timestamp}</td>
+                    <td>${status}</td>
+                    <td>${o.name}</td>
+                    ${rowItemsHtml}
+                </tr>
+              `;
           });
+
+          tableHtml += `<tr><td colspan="${productData.length + 3}"></td></tr>`;
           
-          // ADDED: Final Grand Total Row in CSV
-          csv += `\n,"GRAND TOTAL",,,,${runningTotal}\n`;
-          
-          const blob = new Blob([csv], { type: 'text/csv' });
+          tableHtml += `
+            <tr style="background-color: #f9f9f9; font-weight: bold; color: #d63031;">
+                <td colspan="3" align="right">TOTAL SALES PER ITEM:</td>
+                ${productData.map(p => `<td align="center">₱${productRevenue[p.name].toLocaleString()}</td>`).join('')}
+            </tr>
+          `;
+
+          tableHtml += `<tr><td colspan="${productData.length + 3}"></td></tr>`;
+
+          const spanCount = productData.length + 2;
+          tableHtml += `
+            <tr style="color: #27ae60; font-weight: bold;"><td colspan="${spanCount}" align="right">TOTAL COLLECTED (PAID):</td><td align="right">₱${totalPaid.toLocaleString()}</td></tr>
+            <tr style="color: #d63031; font-weight: bold;"><td colspan="${spanCount}" align="right">TOTAL PENDING (UNPAID):</td><td align="right">₱${totalUnpaid.toLocaleString()}</td></tr>
+            <tr style="background-color: #FFD150; font-weight: bold;"><td colspan="${spanCount}" align="right">OVERALL TOTAL SALES:</td><td align="right">₱${(totalPaid + totalUnpaid).toLocaleString()}</td></tr>
+          `;
+
+          tableHtml += `</table></body></html>`;
+
+          const blob = new Blob([tableHtml], { type: 'application/vnd.ms-excel' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = "Kusina_Daddy_Pong_Sales.csv";
+          a.download = "Daddy_Pong_Financial_Summary.xls";
           a.click();
       });
   });
