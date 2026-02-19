@@ -12,47 +12,33 @@
     <style>
         body { font-family: 'Rubik', sans-serif; background: linear-gradient(black, white); padding: 10px; display: flex; justify-content: center; min-height: 100vh; margin: 0; }
         .container { background: white; width: 100%; max-width: 850px; border-radius: 15px; box-shadow: 0 2px 2px 5px #FFD150; overflow: hidden; height: fit-content; margin-top: 20px;}
-        
         .header { background: #d63031; color: #FFD150; padding: 20px; text-align: center; }
         .logo { width: 80px; height: auto; border-radius: 50%; margin-bottom: 10px; }
         .header h1 { margin: 0; font-family: "Tapestry", serif; font-size: 28px; }
-
         .tabs { display: flex; background: #f1f2f6; border-bottom: 2px solid #dfe6e9; }
         .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: 900; color: #636e72; cursor: pointer; text-transform: uppercase; font-size: 14px; }
         .tab-btn.active { color: #d63031; border-bottom: 4px solid #d63031; background: white; }
-
         .page { display: none; padding: 20px; }
         .page.active { display: block; }
-
         .form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
         .prod-col { grid-column: span 1; width: 135%; }
         .qty-col { grid-column: span 1; width: 60%; justify-self: end; }
-
         label { font-size: 12px; font-weight: 700; color: #636e72; text-transform: uppercase; margin-bottom: 5px; display: block; }
         input, select { font-family: 'Rubik', sans-serif; width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
-        
         #qtyMsg { color: #d63031; font-size: 11px; font-weight: bold; margin-top: 4px; }
-
         .btn-add { background: #d63031; width: 100%; margin-top: 20px; padding: 15px; color: white; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; box-shadow: 0 4px #b02626; }
         .btn-add:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-
         .table-controls { display: flex; gap: 10px; margin-bottom: 15px; }
         #searchBox { flex: 2; }
         .btn-excel { flex: 1; background: #27ae60; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
-
         .table-area { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
         th { text-align: left; font-size: 11px; border-bottom: 2px solid #eee; padding: 10px; color: #b2bec3; text-transform: uppercase; }
         td { padding: 12px 10px; border-bottom: 1px solid #f1f2f6; font-size: 14px; }
-        
         .paid-chk { transform: scale(1.5); cursor: pointer; }
         .paid-row { background-color: #f0fff4; color: #d63031; font-weight: bold; }
-        .paid-row td b { color: #d63031; } 
-
         .del-btn { background: none; border: none; color: #636e72; cursor: pointer; font-size: 18px; }
-        .paid-row .del-btn { color: #d63031; }
-
         .total-section { margin-top: 20px; padding: 15px; text-align: right; background: #f9f9f9; font-size: 22px; font-weight: 900; color: #d63031; border-radius: 10px; }
     </style>
 </head>
@@ -78,14 +64,15 @@
             <div class="prod-col">
                 <label>Product</label>
                 <select id="prod">
-                    <option value="160">Chicken Roll (Ham)</option>
-                    <option value="160">Chicken Roll (Hotdog)</option>
-                    <option value="160">Chicken Pastil (Spicy)</option>
-                    <option value="150">Chicken Pastil (Original)</option>
-                    <option value="180">Pork Humba</option>
-                    <option value="170">Kinamatisang Dilis</option>
-                    <option value="180">Pork Binagoongan (Sweet)</option>
-                    <option value="180">Pork Binagoongan (Sweet & Spicy)</option>
+                    <option value="160">Chicken Roll (Ham) - ₱160</option>
+                    <option value="160">Chicken Roll (Hotdog) - ₱160</option>
+                    <option value="160">Chicken Pastil (Spicy) - ₱160</option>
+                    <option value="150">Chicken Pastil (Original) - ₱150</option>
+                    <option value="180">Pork Humba - ₱180</option>
+                    <option value="170">Kinamatisang Dilis - ₱170</option>
+                    <option value="180">Pork Binagoongan (Sweet) - ₱180</option>
+                    <option value="180">Pork Binagoongan (Sweet & Spicy) - ₱180</option>
+                    <option value="150">Binagoongan - ₱150</option>
                 </select>
             </div>
             <div class="qty-col">
@@ -143,7 +130,8 @@
       { name: "Pork Humba", price: 180 },
       { name: "Kinamatisang Dilis", price: 170 },
       { name: "Pork Binagoongan (Sweet)", price: 180 },
-      { name: "Pork Binagoongan (Sweet & Spicy)", price: 180 }
+      { name: "Pork Binagoongan (Sweet & Spicy)", price: 180 },
+      { name: "Binagoongan", price: 150 }
   ];
 
   const MY_PASS = "Bukatot@18";
@@ -173,7 +161,7 @@
       const qtyInput = document.getElementById('qty');
       const prodSelect = document.getElementById('prod');
       const name = buyerInput.value.trim();
-      const itemName = prodSelect.options[prodSelect.selectedIndex].text;
+      const itemName = prodSelect.options[prodSelect.selectedIndex].text.split(" - ")[0];
       const price = parseInt(prodSelect.value);
       const quantity = parseInt(qtyInput.value);
 
@@ -251,71 +239,79 @@
       else { alert("Incorrect Password!"); }
   };
 
-  // EXCEL EXPORT WITH PRICE ON NEXT LINE
+  // EXCEL EXPORT
   document.getElementById('excelBtn').addEventListener('click', () => {
       get(ordersRef).then(snapshot => {
           const data = snapshot.val();
           if(!data) return alert("No data!");
 
-          let totalPaid = 0;
-          let totalUnpaid = 0;
-          let productRevenue = {};
-          productData.forEach(p => productRevenue[p.name] = 0);
+          const orders = Object.values(data);
+          const startRow = 3; 
+          const endRow = startRow + orders.length - 1;
+          const totalColLetter = String.fromCharCode(68 + productData.length); 
 
           let tableHtml = `
             <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
             <head><meta charset="UTF-8"></head>
             <body>
             <table border="1">
-                <tr style="background-color: #d63031; color: #FFD150; font-weight: bold; height: 50px;">
-                    <th style="vertical-align: middle;">Date</th>
-                    <th style="vertical-align: middle;">Status</th>
-                    <th style="vertical-align: middle;">Buyer Name</th>
-                    ${productData.map(p => `<th style="vertical-align: middle;">${p.name}<br>(₱${p.price})</th>`).join('')}
+                <tr style="display:none;">
+                    <td colspan="3">Unit Prices</td>
+                    ${productData.map(p => `<td>${p.price}</td>`).join('')}
+                    <td></td>
+                </tr>
+                <tr style="background-color: #d63031; color: #FFD150; font-weight: bold;">
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Buyer Name</th>
+                    ${productData.map(p => `<th>${p.name}<br>(₱${p.price})</th>`).join('')}
+                    <th>ORDER TOTAL</th>
                 </tr>
           `;
 
-          Object.values(data).forEach((o, index) => {
-              const status = o.paid ? "PAID" : "UNPAID";
-              if(o.paid) totalPaid += o.total; else totalUnpaid += o.total;
-
+          orders.forEach((o, index) => {
+              const statusText = o.paid ? "PAID" : "UNPAID";
               let rowItemsHtml = productData.map(p => {
-                  if (o.item === p.name) {
-                      productRevenue[p.name] += (o.qty * p.price);
-                      return `<td align="center">${o.qty}</td>`;
-                  }
-                  return `<td></td>`;
+                  let val = (o.item === p.name) ? o.qty : "";
+                  return `<td align="center">${val}</td>`;
               }).join('');
 
-              const bgColor = (index % 2 === 0) ? "#FFFFFF" : "#F2F2F2";
-              const textColor = o.paid ? "#d63031" : "#000000";
-
               tableHtml += `
-                <tr style="background-color: ${bgColor}; color: ${textColor};">
+                <tr>
                     <td>${o.timestamp}</td>
-                    <td>${status}</td>
+                    <td>${statusText}</td>
                     <td>${o.name}</td>
                     ${rowItemsHtml}
+                    <td align="right">${o.total}</td>
                 </tr>
               `;
           });
 
-          tableHtml += `<tr><td colspan="${productData.length + 3}"></td></tr>`;
+          tableHtml += `<tr><td colspan="${productData.length + 4}"></td></tr>`;
           
+          let itemSalesFormulas = productData.map((p, i) => {
+              let colLetter = String.fromCharCode(68 + i);
+              return `<td align="center" style="font-weight:bold;">=SUM(${colLetter}${startRow}:${colLetter}${endRow})*${colLetter}1</td>`;
+          }).join('');
+
           tableHtml += `
-            <tr style="background-color: #f9f9f9; font-weight: bold; color: #d63031;">
-                <td colspan="3" align="right">TOTAL SALES PER ITEM:</td>
-                ${productData.map(p => `<td align="center">₱${productRevenue[p.name].toLocaleString()}</td>`).join('')}
+            <tr style="background-color: #f1f2f6; color: #d63031; font-weight: bold;">
+                <td colspan="3" align="right">TOTAL SALES PER ITEM (PHP):</td>
+                ${itemSalesFormulas}
+                <td></td>
             </tr>
           `;
 
-          tableHtml += `<tr><td colspan="${productData.length + 3}"></td></tr>`;
+          const spanCount = productData.length + 3;
+          let paidFormula = `=SUMIF(B${startRow}:B${endRow},"PAID",${totalColLetter}${startRow}:${totalColLetter}${endRow})`;
+          let unpaidFormula = `=SUMIF(B${startRow}:B${endRow},"UNPAID",${totalColLetter}${startRow}:${totalColLetter}${endRow})`;
+          let overallFormula = `=SUM(${totalColLetter}${startRow}:${totalColLetter}${endRow})`;
 
-          const spanCount = productData.length + 2;
           tableHtml += `
-            <tr style="color: #27ae60; font-weight: bold;"><td colspan="${spanCount}" align="right">TOTAL COLLECTED (PAID):</td><td align="right">₱${totalPaid.toLocaleString()}</td></tr>
-            <tr style="color: #d63031; font-weight: bold;"><td colspan="${spanCount}" align="right">TOTAL PENDING (UNPAID):</td><td align="right">₱${totalUnpaid.toLocaleString()}</td></tr>
-            <tr style="background-color: #FFD150; font-weight: bold;"><td colspan="${spanCount}" align="right">OVERALL TOTAL SALES:</td><td align="right">₱${(totalPaid + totalUnpaid).toLocaleString()}</td></tr>
+            <tr><td colspan="${productData.length + 4}"></td></tr>
+            <tr style="color: #27ae60; font-weight: bold;"><td colspan="${spanCount}" align="right">TOTAL COLLECTED (PAID):</td><td align="right">${paidFormula}</td></tr>
+            <tr style="color: #d63031; font-weight: bold;"><td colspan="${spanCount}" align="right">TOTAL PENDING (UNPAID):</td><td align="right">${unpaidFormula}</td></tr>
+            <tr style="background-color: #FFD150; font-weight: bold;"><td colspan="${spanCount}" align="right">OVERALL TOTAL SALES:</td><td align="right">${overallFormula}</td></tr>
           `;
 
           tableHtml += `</table></body></html>`;
@@ -324,7 +320,7 @@
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = "Daddy_Pong_Financial_Summary.xls";
+          a.download = "Daddy_Pong_Orders.xls";
           a.click();
       });
   });
