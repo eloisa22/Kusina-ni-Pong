@@ -264,7 +264,7 @@
                     <th>Date</th>
                     <th>Status</th>
                     <th>Buyer Name</th>
-                    ${productData.map(p => `<th>${p.name}<br>(₱${p.price})</th>`).join('')}
+                    ${productData.map(p => `<th style="mso-number-format:'\\@';">${p.name}<br style="mso-data-placement:same-cell;">(₱${p.price})</th>`).join('')}
                     <th>ORDER TOTAL</th>
                 </tr>
           `;
@@ -289,6 +289,7 @@
 
           tableHtml += `<tr><td colspan="${productData.length + 4}"></td></tr>`;
           
+          // ROW 1: TOTAL SALES
           let itemSalesFormulas = productData.map((p, i) => {
               let colLetter = String.fromCharCode(68 + i);
               return `<td align="center" style="font-weight:bold;">=SUM(${colLetter}${startRow}:${colLetter}${endRow})*${colLetter}1</td>`;
@@ -298,6 +299,20 @@
             <tr style="background-color: #f1f2f6; color: #d63031; font-weight: bold;">
                 <td colspan="3" align="right">TOTAL SALES PER ITEM (PHP):</td>
                 ${itemSalesFormulas}
+                <td></td>
+            </tr>
+          `;
+
+          // NEW ROW 2: TOTAL QUANTITY
+          let itemQtyFormulas = productData.map((p, i) => {
+              let colLetter = String.fromCharCode(68 + i);
+              return `<td align="center" style="font-weight:bold; color: #d63031;">=SUM(${colLetter}${startRow}:${colLetter}${endRow})</td>`;
+          }).join('');
+
+          tableHtml += `
+            <tr style="background-color: #ffffff; color: #2d3436; font-weight: bold;">
+                <td colspan="3" align="right">TOTAL QUANTITY PER ITEM:</td>
+                ${itemQtyFormulas}
                 <td></td>
             </tr>
           `;
